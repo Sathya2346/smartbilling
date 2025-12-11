@@ -1,0 +1,110 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Billing - Smart Billing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6/umd/index.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">Smart Billing</a>
+    <!-- Toggler Button (MISSING IN YOUR CODE) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/customers}">Customers</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/billing}">Billing</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/invoices}">Invoices</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-3">
+  <div class="row">
+    <div class="col-md-7">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Scan SKU / UPI QR</strong>
+          <button class="btn btn-sm btn-outline-secondary" id="cameraBtn" onclick="toggleCamera()">Start camera</button>
+        </div>
+        <div class="card-body">
+          <video id="cameraPreview" autoplay playsinline style="width: 100%; max-width: 600px;"></video>
+          <audio id="beepSound" src="/sounds/beep.mp3" preload="auto"></audio>
+          <div id="scannerStatus" class="text-danger"></div>
+          <canvas id="qrCanvas" class="d-none"></canvas>
+          <div class="mt-2">
+            <input id="manualSku" class="form-control" placeholder="Scan barcode or type SKU" onkeydown="if(event.key==='Enter'){addSku()}">
+            <button class="btn btn-primary mt-2" onclick="addSku()">Add by SKU</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header"><strong>Cart</strong></div>
+        <div class="card-body table-responsive">
+          <table class="table table-sm">
+            <thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>GST</th><th>Total</th><th></th></tr></thead>
+            <tbody id="cartBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header"><strong>Summary</strong></div>
+        <div class="card-body">
+          <div class="mb-2">
+            <label class="form-label">Customer</label>
+            <select id="customer" class="form-select">
+              <option value="">Walk-in Customer</option>
+              <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Discount (₹)</label>
+            <input type="number" step="0.01" id="discount" class="form-control" value="0">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Payment mode</label>
+            <select id="paymentMode" class="form-select">
+              <option value="CASH">CASH</option>
+              <option value="CARD">CARD</option>
+              <option value="UPI">UPI</option>
+            </select>
+          </div>
+          <div id="upiSection" class="mb-2 d-none">
+            <label class="form-label">UPI reference</label>
+            <input id="upiRef" class="form-control" placeholder="Txn ID or parse from UPI QR">
+          </div>
+
+          <hr>
+          <div><strong>Subtotal:</strong> ₹ <span id="subtotal">0.00</span></div>
+          <div><strong>GST:</strong> ₹ <span id="gstTotal">0.00</span></div>
+          <div><strong>Discount:</strong> ₹ <span id="discountView">0.00</span></div>
+          <div class="h4 mt-2">Total: ₹ <span id="total">0.00</span></div>
+
+          <button class="btn btn-success mt-3 w-100" onclick="checkout()">Checkout & Print</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="text-center mt-auto py-3">
+      &copy; 2025 Smart Billing. All rights reserved.
+</footer>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script th:src="@{/js/billing.js}"></script>
+</body>
+</html>

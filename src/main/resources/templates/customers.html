@@ -1,0 +1,99 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Customers - Smart Billing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">Smart Billing</a>
+    <!-- Toggler Button (MISSING IN YOUR CODE) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/customers}">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/billing}">Billing</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/invoices}">Invoices</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h3>Customers</h3>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">Add customer</button>
+  </div>
+
+  <div class="d-flex gap-2 my-3 filter-container">
+    <input type="text" id="customerFilter" class="form-control w-75" placeholder="Search by Name, Phone, or Email">
+    <button class="btn btn-success" id="downloadPdf">Download</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${customers}">
+          <td th:text="${c.name}">Name</td>
+          <td th:text="${c.phone}">Phone</td>
+          <td th:text="${c.email}">Email</td>
+          <td th:text="${c.address}">Address</td>
+          <td>
+            <button class="btn btn-sm btn-secondary" th:attr="data-id=${c.id}" onclick="editCustomer(this)">Edit</button>
+            <button class="btn btn-sm btn-danger" th:attr="data-id=${c.id}" onclick="deleteCustomer(this)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="customerModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" id="customerForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="id">
+        <div class="mb-2"><label class="form-label">Name</label><input id="name" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Phone</label><input id="phone" class="form-control"></div>
+        <div class="mb-2"><label class="form-label">Email</label><input id="email" type="email" class="form-control"></div>
+        <div class="mb-2"><label class="form-label">Address (Optional)</label><textarea id="address" class="form-control"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="text-center mt-auto py-3">
+      &copy; 2025 Smart Billing. All rights reserved.
+</footer>
+  <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <!-- External JS -->
+  <script th:src="@{/js/customers.js}"></script>
+</body>
+</html>

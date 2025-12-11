@@ -1,0 +1,93 @@
+/* C:\Users\Admin\Desktop\FullStack\smartbilling\src\main\resources\static\css\style.css */
+body { background-color: #f8f9fa; }
+.navbar-brand { font-weight: 600; }
+.table td, .table th { vertical-align: middle; }
+.filter-container input, .filter-container select { max-width: 200px; }
+.filter-container .btn { min-width: 120px; }
+table img { max-width: 120px; }
+
+html, body {
+    height: 100%;
+}
+
+:root {
+  /* Primary colors */
+  --primary-color: #5B21B6;       /* Indigo – main buttons, navbar */
+  --primary-hover: #4C1D95;       /* Slightly darker for hover */
+
+  --secondary-color: #a49898;     /* Cyan – secondary buttons, highlights */
+  --secondary-hover: #625b5b;     /* Darker cyan for hover */
+
+  /* Accent / highlights */
+  --success-color: #C4B5FD;        /* Lavender – badges, highlights */
+
+  /* Backgrounds */
+  --bg-color: #F9FAFB;            /* Soft gray – page background */
+  --card-bg: #FFFFFF;             /* White – cards, modals */
+  --table-header-color: #FFFFFF;  /* White text in headers */
+  --white-color:#ffffff;
+  /* Text colors */
+  --text-color: #1F2937;          /* Dark gray – default text */
+  --text-light: #6B7280;          /* Medium gray – secondary text */
+  --text-inverse: #FFFFFF;        /* For text on primary color */
+
+  /* Alerts / Notifications */
+  --success-color: #10B981;       /* Green success messages */
+  --danger-color: #EF4444;        /* Red errors */
+  --warning-color: #F59E0B;       /* Amber warnings */
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.navbar-custom {
+    background-color: var(--primary-color);
+}
+.navbar-custom .nav-link,
+.navbar-custom .navbar-brand {
+    color: var(--text-inverse);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--white-color);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+.btn-secondary:hover {
+    background-color: var(--white-color);
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.table-dark {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-color);
+}
+
+h3{
+    color: var(--primary-color);
+}
+
+.btn-success{
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+.btn-success:hover {
+    background-color: var(--white-color);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+footer {
+    font-size: 0.9rem;
+}

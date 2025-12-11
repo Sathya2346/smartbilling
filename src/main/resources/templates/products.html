@@ -1,0 +1,174 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Products - Smart Billing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">Smart Billing</a>
+    <!-- Toggler Button (MISSING IN YOUR CODE) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" th:href="@{/products}">Products</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/customers}">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/billing}">Billing</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/invoices}">Invoices</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h3>Products</h3>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">Add product</button>
+  </div>
+
+  <!-- Responsive Filters -->
+  <div class="row g-2 my-4">
+    <div class="col-12 col-md-3">
+      <input type="text" id="productFilter" class="form-control" placeholder="Search products...">
+    </div>
+
+    <div class="col-6 col-md-2">
+      <select id="stockFilter" class="form-select">
+        <option value="">All Stock</option>
+        <option value="low">Low (&lt;10)</option>
+        <option value="medium">10-50</option>
+        <option value="high">&gt;50</option>
+      </select>
+    </div>
+
+    <div class="col-6 col-md-2">
+      <input type="date" id="filterStoreDate" class="form-control">
+    </div>
+
+    <div class="col-6 col-md-2">
+      <input type="date" id="filterExpiryDate" class="form-control">
+    </div>
+
+    <div class="col-6 col-md-3 text-md-end">
+      <button class="btn btn-success w-100 w-md-auto" id="downloadPdf">Download PDF</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>SKU</th>
+          <th>Name</th>
+          <th>Price &#8377;</th>
+          <th>GST %</th>
+          <th>Stock</th>
+          <th>Unit</th>
+          <th>Store Date</th>
+          <th>Expiry Date</th>
+          <th>Barcode</th>
+          <th class="text-center">Barcode Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${products}">
+          <td th:text="${p.sku}">SKU</td>
+          <td th:text="${p.name}">Name</td>
+          <td th:text="${p.sellPrice}">0</td>
+          <td th:text="${p.gstRate}">18</td>
+          <td th:text="${p.stock}">0</td>
+          <td th:text="${p.unit}">pcs</td>
+          <td th:text="${p.storeDate}">2025-01-01</td>
+          <td th:text="${p.expiryDate}">2025-12-31</td>
+          <td th:text="${p.barcode}">Barcode</td>
+          <td class="text-center">
+            <img th:src="@{'/barcodes/' + ${p.barcode} + '.png'}" alt="Barcode">
+            <button class="btn btn-sm btn-outline-primary mt-1" th:attr="data-barcode=${p.barcode}">Print</button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-secondary" th:attr="data-id=${p.id}" onclick="editProduct(this)">Edit</button>
+            <button class="btn btn-sm btn-danger" th:attr="data-id=${p.id}">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="productModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" id="productForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="id">
+        <div class="mb-2">
+          <label class="form-label">SKU</label>
+          <input type="text" class="form-control" id="sku" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Sell price</label>
+          <input type="number" step="0.01" class="form-control" id="sellPrice" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">MRP</label>
+          <input type="number" step="0.01" class="form-control" id="mrp" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">GST rate (%)</label>
+          <input type="number" class="form-control" id="gstRate" value="18">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Stock</label>
+          <input type="number" class="form-control" id="stock" value="0">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Unit</label>
+          <input type="text" class="form-control" id="unit" value="pcs">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Store Date</label>
+          <input type="date" class="form-control" id="storeDate">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Expiry Date</label>
+          <input type="date" class="form-control" id="expiryDate">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="text-center mt-auto py-3">
+      &copy; 2025 Smart Billing. All rights reserved.
+</footer>
+
+  <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <!-- External JS -->
+  <script th:src="@{/js/products.js}"></script>
+</body>
+</html>

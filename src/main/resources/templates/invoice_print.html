@@ -1,0 +1,57 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Invoice Print</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @media print { .no-print { display: none; } }
+    .invoice { max-width: 800px; margin: auto; }
+  </style>
+</head>
+<body>
+<div class="invoice p-4">
+  <div class="d-flex justify-content-between">
+    <div>
+      <h4>Smart Store</h4>
+      <div>Coimbatore, Tamil Nadu</div>
+      <div>GSTIN: 33XXXXXXXXXXXX</div>
+    </div>
+    <div class="text-end">
+      <div><strong>Invoice:</strong> <span th:text="${invoice.invoiceNo}">INV</span></div>
+      <div><strong>Date:</strong> <span th:text="${invoice.createdAt}">Date</span></div>
+    </div>
+  </div>
+  <hr>
+  <div>
+    <strong>Customer:</strong>
+    <span th:text="${invoice.customer != null ? invoice.customer.name : 'Walk-in Customer'}">Name</span>
+  </div>
+  <table class="table table-sm mt-3">
+    <thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>GST</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr th:each="item,iter : ${invoice.items}">
+        <td th:text="${iter.index + 1}">1</td>
+        <td th:text="${item.name}">Item</td>
+        <td th:text="${item.qty}">1</td>
+        <td>₹ <span th:text="${item.unitPrice}">0</span></td>
+        <td><span th:text="${item.gstRate}">18</span>% (₹ <span th:text="${item.gstAmount}">0</span>)</td>
+        <td>₹ <span th:text="${item.lineTotal}">0</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-end">
+    <div>Subtotal: ₹ <span th:text="${invoice.subtotal}">0</span></div>
+    <div>Discount: ₹ <span th:text="${invoice.discount}">0</span></div>
+    <div>GST: ₹ <span th:text="${invoice.gstTotal}">0</span></div>
+    <div class="h5">Total: ₹ <span th:text="${invoice.total}">0</span></div>
+    <div>Payment: <span th:text="${invoice.paymentMode}">CASH</span> <span th:if="${invoice.upiReference}"> (Ref: <span th:text="${invoice.upiReference}">ref</span>)</span></div>
+  </div>
+  <div class="mt-3 no-print">
+    <button class="btn btn-primary" onclick="window.print()">Print</button>
+    <a class="btn btn-secondary" th:href="@{/invoices}">Back</a>
+  </div>
+</div>
+</body>
+</html>

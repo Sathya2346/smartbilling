@@ -1,0 +1,77 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Invoices - Smart Billing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">Smart Billing</a>
+    <!-- Toggler Button (MISSING IN YOUR CODE) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/customers}">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/billing}">Billing</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/invoices}">Invoices</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Invoices</h3>
+    <button class="btn btn-success" id="downloadPdf">Download PDF</button>
+  </div>
+
+  <div class="mb-3 filter-container">
+    <input type="text" id="invoiceFilter" class="form-control" placeholder="Search by Invoice No or Customer">
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>No</th>
+          <th>Customer</th>
+          <th>Subtotal &#8377;</th>
+          <th>GST %</th>
+          <th>Total &#8377;</th>
+          <th>Mode</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="inv : ${invoices}">
+          <td th:text="${inv.invoiceNo}">INV</td>
+          <td th:text="${inv.customer != null ? inv.customer.name : 'Walk-in'}">Customer</td>
+          <td th:text="${inv.subtotal}">0</td>
+          <td th:text="${inv.gstTotal}">0</td>
+          <td class="fw-bold" th:text="${inv.total}">0</td>
+          <td th:text="${inv.paymentMode}">CASH</td>
+          <td><a class="btn btn-sm btn-outline-primary" th:href="@{'/invoice-print?no=' + ${inv.invoiceNo}}">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="text-center mt-auto py-3">
+      &copy; 2025 Smart Billing. All rights reserved.
+</footer>
+
+  <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <!-- External JS -->
+  <script th:src="@{/js/invoices.js}"></script>
+</body>
+</html>
